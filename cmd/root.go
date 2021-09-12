@@ -17,7 +17,6 @@ package cmd
 
 import (
 	"errors"
-	"fmt"
 
 	"github.com/anilkusc/kinject/kapi"
 	"github.com/spf13/cobra"
@@ -37,8 +36,10 @@ var rootCmd = &cobra.Command{
 	},
 	Run: func(cmd *cobra.Command, args []string) {
 		client := kapi.CreateClient(cmd.Flag("kubeconfig").Value.String())
-		deployment := kapi.GetDeployment(client, cmd.Flag("namespace").Value.String(), cmd.Flag("name").Value.String())
-		fmt.Printf("%v", deployment)
+		//deployment := kapi.GetDeployment(client, cmd.Flag("namespace").Value.String(), cmd.Flag("name").Value.String())
+		//deployments := kapi.ListDeployment(client, cmd.Flag("namespace").Value.String())
+		kapi.PatchDeploymentEnv(client, cmd.Flag("namespace").Value.String(), cmd.Flag("name").Value.String(), cmd.Flag("environment").Value.String())
+		//fmt.Printf("%v", deployments.Items[0].Name)
 	},
 }
 
@@ -52,5 +53,6 @@ func init() {
 	rootCmd.PersistentFlags().StringP("kubeconfig", "c", "~/.kube/config", "Kubeconfig path")
 	rootCmd.Flags().StringP("namespace", "n", "all", "Kubernetes Namespace That Will Be Affect")
 	rootCmd.Flags().StringP("name", "N", "", "Kubernetes Workload Name")
+	rootCmd.Flags().StringP("environment", "e", "", "Environment Key Value(Key:Value)")
 
 }
