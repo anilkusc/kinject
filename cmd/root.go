@@ -19,6 +19,7 @@ import (
 	"errors"
 	"fmt"
 
+	"github.com/anilkusc/kinject/kapi"
 	"github.com/spf13/cobra"
 )
 
@@ -35,7 +36,9 @@ var rootCmd = &cobra.Command{
 		}
 	},
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println(cmd.Flag("kind").Value.String())
+		client := kapi.CreateClient(cmd.Flag("kubeconfig").Value.String())
+		deployment := kapi.GetDeployment(client, cmd.Flag("namespace").Value.String(), cmd.Flag("name").Value.String())
+		fmt.Printf("%v", deployment)
 	},
 }
 
@@ -44,9 +47,10 @@ func Execute() {
 }
 
 func init() {
-	rootCmd.Flags().StringP("kubeconfig", "c", "~/.kube/config", "Kubeconfig path")
 	rootCmd.Flags().StringP("kind", "k", "", "Kubernetes Kind Object like Deployment,Pod etc.")
 	rootCmd.MarkFlagRequired("kind")
+	rootCmd.PersistentFlags().StringP("kubeconfig", "c", "~/.kube/config", "Kubeconfig path")
 	rootCmd.Flags().StringP("namespace", "n", "all", "Kubernetes Namespace That Will Be Affect")
+	rootCmd.Flags().StringP("name", "N", "", "Kubernetes Workload Name")
 
 }
