@@ -27,12 +27,21 @@ var rootCmd = &cobra.Command{
 	Short: "A brief description of your application",
 	Long:  `A longer description that spans multiple lines and likely contains examples and usage of using your application.`,
 	Args: func(cmd *cobra.Command, args []string) error {
+		//TODO: Environment Legality Control(Must be "key:value")
+		var err error
 		switch cmd.Flag("kind").Value.String() {
 		case "deployment", "deploy", "sts", "statefulset", "pod":
-			return nil
+			err = nil
 		default:
 			return errors.New("requires a valid kind parameter")
 		}
+		switch cmd.Flag("type").Value.String() {
+		case "env", "Env", "Environment", "environment":
+			err = nil
+		default:
+			return errors.New("requires a valid type parameter")
+		}
+		return err
 	},
 	Run: func(cmd *cobra.Command, args []string) {
 		client := kapi.CreateClient(cmd.Flag("kubeconfig").Value.String())
@@ -54,5 +63,7 @@ func init() {
 	rootCmd.Flags().StringP("namespace", "n", "all", "Kubernetes Namespace That Will Be Affect")
 	rootCmd.Flags().StringP("name", "N", "", "Kubernetes Workload Name")
 	rootCmd.Flags().StringP("environment", "e", "", "Environment Key Value(Key:Value)")
+	rootCmd.Flags().StringP("type", "t", "env", "Type of the yaml object (Environment,Probes etc.)")
+	rootCmd.MarkFlagRequired("type")
 
 }
