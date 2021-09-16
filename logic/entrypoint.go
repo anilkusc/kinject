@@ -31,7 +31,7 @@ func DeploymentEnvironmentSetter(cmd *cobra.Command) {
 	if cmd.Flag("namespace").Value.String() == "all" {
 		namespaces := kapi.ListNamespaces(client)
 		for _, namespace := range namespaces {
-			deployments := kapi.ListDeployments(client, cmd.Flag("namespace").Value.String())
+			deployments := kapi.ListDeployments(client, namespace.Name)
 			for _, deployment := range deployments {
 				kapi.PatchDeploymentEnv(client, namespace.Name, deployment.Name, cmd.Flag("environment").Value.String())
 			}
@@ -39,7 +39,7 @@ func DeploymentEnvironmentSetter(cmd *cobra.Command) {
 	} else {
 		deployments := kapi.ListDeployments(client, cmd.Flag("namespace").Value.String())
 		for _, deployment := range deployments {
-			kapi.PatchDeploymentEnv(client, cmd.Flag("namespace").Value.String(), deployment.Name, cmd.Flag("environment").Value.String())
+			kapi.PatchDeploymentEnv(client, deployment.Namespace, deployment.Name, cmd.Flag("environment").Value.String())
 		}
 	}
 

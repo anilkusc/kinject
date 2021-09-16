@@ -51,6 +51,8 @@ func ListDeployments(client *kubernetes.Clientset, namespace string) []models.My
 			environment.Value = listedEnv.Value
 			environments = append(environments, environment)
 		}
+		deployment.Env = environments
+		deployments = append(deployments, deployment)
 	}
 	return deployments
 }

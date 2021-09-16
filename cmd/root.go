@@ -18,7 +18,7 @@ package cmd
 import (
 	"errors"
 
-	"github.com/anilkusc/kinject/kapi"
+	"github.com/anilkusc/kinject/logic"
 	"github.com/spf13/cobra"
 )
 
@@ -44,11 +44,7 @@ var rootCmd = &cobra.Command{
 		return err
 	},
 	Run: func(cmd *cobra.Command, args []string) {
-		client := kapi.CreateClient(cmd.Flag("kubeconfig").Value.String())
-		//deployment := kapi.GetDeployment(client, cmd.Flag("namespace").Value.String(), cmd.Flag("name").Value.String())
-		//deployments := kapi.ListDeployment(client, cmd.Flag("namespace").Value.String())
-		kapi.PatchDeploymentEnv(client, cmd.Flag("namespace").Value.String(), cmd.Flag("name").Value.String(), cmd.Flag("environment").Value.String())
-		//fmt.Printf("%v", deployments.Items[0].Name)
+		logic.Entrypoint(cmd)
 	},
 }
 
@@ -64,6 +60,5 @@ func init() {
 	rootCmd.Flags().StringP("name", "N", "", "Kubernetes Workload Name")
 	rootCmd.Flags().StringP("environment", "e", "", "Environment Key Value(Key:Value)")
 	rootCmd.Flags().StringP("type", "t", "env", "Type of the yaml object (Environment,Probes etc.)")
-	rootCmd.MarkFlagRequired("type")
 
 }
