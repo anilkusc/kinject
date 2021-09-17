@@ -18,7 +18,6 @@ package cmd
 import (
 	"errors"
 
-	"github.com/anilkusc/kinject/logic"
 	"github.com/spf13/cobra"
 )
 
@@ -44,7 +43,7 @@ var rootCmd = &cobra.Command{
 		return err
 	},
 	Run: func(cmd *cobra.Command, args []string) {
-		logic.Entrypoint(cmd)
+		//logic.Entrypoint(cmd)
 	},
 }
 
@@ -53,12 +52,12 @@ func Execute() {
 }
 
 func init() {
-	rootCmd.Flags().StringP("kind", "k", "", "Kubernetes Kind Object like Deployment,Pod etc.")
-	rootCmd.MarkFlagRequired("kind")
 	rootCmd.PersistentFlags().StringP("kubeconfig", "c", "~/.kube/config", "Kubeconfig path")
-	rootCmd.Flags().StringP("namespace", "n", "all", "Kubernetes Namespace That Will Be Affect")
-	rootCmd.Flags().StringP("name", "N", "", "Kubernetes Workload Name")
-	rootCmd.Flags().StringP("environment", "e", "", "Environment Key Value(Key:Value)")
-	rootCmd.Flags().StringP("type", "t", "env", "Type of the yaml object (Environment,Probes etc.)")
+	rootCmd.PersistentFlags().StringP("environment", "e", "", "Environment Key Value(Key:Value)")
+	rootCmd.PersistentFlags().StringP("namespace", "n", "all", "Kubernetes Namespace That Will Be Affect")
 
+	initDeploymentCommand()
+	rootCmd.AddCommand(deploymentCmd)
+	//deploymentCmd.Flags().StringP("namespace", "n", "all", "Kubernetes Namespace That Will Be Affect")
+	//deploymentCmd.AddCommand(environmentCmd)
 }
