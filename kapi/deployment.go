@@ -83,3 +83,23 @@ func PatchDeploymentEnv(client *kubernetes.Clientset, namespace string, deployme
 
 	return err
 }
+func DeleteDeploymentEnv(client *kubernetes.Clientset, namespace string, deploymentName string, env string) error {
+	envs := strings.Split(env, ":")
+	key := envs[0]
+	//value := envs[1]
+	gotDeployment, err := client.AppsV1().Deployments(namespace).Get(context.TODO(), deploymentName, metav1.GetOptions{})
+	if err != nil {
+		log.Println(err)
+	}
+	for i, environment := range gotDeployment.Spec.Template.Spec.Containers[0].Env {
+		if environment.Name == key {
+			//append(gotDeployment.Spec.Template.Spec.Containers[0].Env[:i], gotDeployment.Spec.Template.Spec.Containers[0].Env[i+1:]...)
+			gotDeployment.Spec.Template.Spec.Containers[0].Env[i] = gotDeployment.Spec.Template.Spec.Containers[0].Env[len(gotDeployment.Spec.Template.Spec.Containers[0].Env)-1]
+			gotDeployment.Spec.Template.Spec.Containers[0].Env = gotDeployment.Spec.Template.Spec.Containers[0].Env[:len(gotDeployment.Spec.Template.Spec.Containers[0].Env)-1]
+			break
+		}
+	}
+	client.AppsV1().Deployments(namespace).Update(context.TODO(), gotDeployment, metav1.UpdateOptions{})
+
+	return err
+}

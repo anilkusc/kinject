@@ -21,3 +21,19 @@ func DeploymentEnvironmentSetter(client *kubernetes.Clientset, namespace string,
 		}
 	}
 }
+func DeploymentEnvironmentRemover(client *kubernetes.Clientset, namespace string, env string) {
+	if namespace == "all" {
+		namespaces := kapi.ListNamespaces(client)
+		for _, namespace := range namespaces {
+			deployments := kapi.ListDeployments(client, namespace.Name)
+			for _, deployment := range deployments {
+				kapi.DeleteDeploymentEnv(client, namespace.Name, deployment.Name, env)
+			}
+		}
+	} else {
+		deployments := kapi.ListDeployments(client, namespace)
+		for _, deployment := range deployments {
+			kapi.DeleteDeploymentEnv(client, deployment.Namespace, deployment.Name, env)
+		}
+	}
+}
