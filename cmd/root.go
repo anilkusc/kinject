@@ -16,8 +16,6 @@ limitations under the License.
 package cmd
 
 import (
-	"errors"
-
 	"github.com/spf13/cobra"
 )
 
@@ -25,26 +23,13 @@ var rootCmd = &cobra.Command{
 	Use:   "kinject",
 	Short: "A brief description of your application",
 	Long:  `A longer description that spans multiple lines and likely contains examples and usage of using your application.`,
-	Args: func(cmd *cobra.Command, args []string) error {
-		//TODO: Environment Legality Control(Must be "key:value")
-		var err error
-		switch cmd.Flag("kind").Value.String() {
-		case "deployment", "deploy", "sts", "statefulset", "pod":
-			err = nil
-		default:
-			return errors.New("requires a valid kind parameter")
-		}
-		switch cmd.Flag("type").Value.String() {
-		case "env", "Env", "Environment", "environment":
-			err = nil
-		default:
-			return errors.New("requires a valid type parameter")
-		}
-		return err
-	},
-	Run: func(cmd *cobra.Command, args []string) {
-		//logic.Entrypoint(cmd)
-	},
+	//Args: func(cmd *cobra.Command, args []string) error {
+	//Control arguments
+	//	return nil
+	//},
+	//Run: func(cmd *cobra.Command, args []string) {
+	//logic.Entrypoint(cmd)
+	//},
 }
 
 func Execute() {
@@ -53,12 +38,12 @@ func Execute() {
 
 func init() {
 	rootCmd.PersistentFlags().StringP("kubeconfig", "c", "~/.kube/config", "Kubeconfig path")
-	rootCmd.PersistentFlags().StringP("environment", "e", "", "Environment Key Value(Key:Value)")
+	//rootCmd.PersistentFlags().StringP("environment", "e", "", "Environment Key Value(Key:Value)")
 	rootCmd.PersistentFlags().StringP("namespace", "n", "all", "Kubernetes Namespace That Will Be Affect")
-	rootCmd.PersistentFlags().StringP("mode", "m", "add", "Mode of tool(add,delete).Add will be edit if exist.")
+	//rootCmd.PersistentFlags().StringP("mode", "m", "add", "Mode of tool(add,delete).Add will be edit if exist.")
 
 	initDeploymentCommand()
 	rootCmd.AddCommand(deploymentCmd)
-	//deploymentCmd.Flags().StringP("namespace", "n", "all", "Kubernetes Namespace That Will Be Affect")
+
 	//deploymentCmd.AddCommand(environmentCmd)
 }
