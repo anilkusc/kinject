@@ -38,9 +38,7 @@ func Execute() {
 
 func init() {
 	rootCmd.PersistentFlags().StringP("kubeconfig", "c", "~/.kube/config", "Kubeconfig path")
-	//rootCmd.PersistentFlags().StringP("environment", "e", "", "Environment Key Value(Key:Value)")
 	rootCmd.PersistentFlags().StringP("namespace", "n", "all", "Kubernetes Namespace That Will Be Affect")
-	//rootCmd.PersistentFlags().StringP("mode", "m", "add", "Mode of tool(add,delete).Add will be edit if exist.")
 
 	initDeploymentCommand()
 	rootCmd.AddCommand(deploymentCmd)
